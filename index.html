@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EndlessBanks API — Developer documentation</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="sidebar-logo">
+            <div class="plugin-name">EndlessBanks</div>
+            <div class="version">API v1.0</div><br><br>
+            <p>@codewithfil</p>
+        </div>
+
+        <div class="nav-section">
+            <span class="nav-label">Introduzione</span>
+            <a class="nav-link" href="#setup"><span class="dot"></span>Setup & dipendenza</a>
+            <a class="nav-link" href="#getting-started"><span class="dot"></span>Getting Started</a>
+        </div>
+
+        <div class="nav-section">
+            <span class="nav-label">Entry Point</span>
+            <a class="nav-link" href="#endlessbanksapi"><span class="dot"></span>EndlessBanksAPI</a>
+        </div>
+
+        <div class="nav-section">
+            <span class="nav-label">Manager</span>
+            <a class="nav-link" href="#icardmanager"><span class="dot"></span>ICardManager</a>
+            <a class="nav-link" href="#ibusinessmanager"><span class="dot"></span>IBusinessManager</a>
+        </div>
+
+        <div class="nav-section">
+            <span class="nav-label">Oggetti</span>
+            <a class="nav-link" href="#bankcard"><span class="dot"></span>BankCard</a>
+            <a class="nav-link" href="#businessaccount"><span class="dot"></span>BusinessAccount</a>
+            <a class="nav-link" href="#businesscard"><span class="dot"></span>BusinessCard</a>
+            <a class="nav-link" href="#cardmodel"><span class="dot"></span>CardModel</a>
+            <a class="nav-link" href="#transactions"><span class="dot"></span>Transazioni</a>
+        </div>
+
+        <div class="nav-section">
+            <span class="nav-label">Enumeratori</span>
+            <a class="nav-link" href="#enums"><span class="dot"></span>CapitalType & TransactionDirection</a>
+        </div>
+
+        <div class="nav-section">
+            <span class="nav-label">Eventi</span>
+            <a class="nav-link" href="#events"><span class="dot"></span>Transaction events</a>
+        </div>
+
+        <div class="nav-section">
+            <span class="nav-label">Esempi</span>
+            <a class="nav-link" href="#examples"><span class="dot"></span>Casi d'uso pratici</a>
+        </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- HERO -->
+        <div class="hero">
+            <div class="hero-eyebrow">EndlessHorizonsNetwork</div>
+            <h1>🏦 EndlessBanks<br><span>API Reference</span></h1>
+            <p class="hero-desc">
+                Documentazione ufficiale per lo sviluppo di plugin che integrano il sistema bancario di EndlessBanks.
+                Accedi a conti personali, carte aziendali, transazioni ed eventi in modo sicuro e stabile. Di seguito
+                gli strumenti utilizzato per lo sviluppo:
+            </p>
+            <div class="hero-tags">
+                <span class="tag tag-blue">Java 21</span>
+                <span class="tag tag-green">Paper 1.21.3</span>
+                <span class="tag tag-purple">Vault API</span>
+                <span class="tag tag-amber">EndlessBanks v1.0</span>
+            </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="content">
+
+            <!-- SETUP -->
+            <section class="section" id="setup">
+                <div class="section-header">
+                    <div class="section-icon icon-blue">📦</div>
+                    <h2>Setup e dipendenza</h2>
+                </div>
+
+                <p>
+                    Per utilizzare l'API di EndlessBanks nel tuo plugin è sufficiente aggiungere
+                    <code>EndlessBanksAPI</code> come dipendenza Maven con scope <code>provided</code>.
+                    Il jar verrà risolto dal tuo repository locale (<code>.m2</code>), previo install.
+                </p>
+
+                <h3>1. Installa l'API nel repository locale</h3>
+                <p>Richiedi il file <code>EndlessBanksAPI-1.0.jar</code> allo sviluppatore principale ed esegui:</p>
+                <pre><code><span class="cm"># Da terminale, nella directory dove si trova il jar</span>
+mvn install:install-file \
+  -Dfile=EndlessBanksAPI-1.0.jar \
+  -DgroupId=it.endlesshorizons \
+  -DartifactId=EndlessBanksAPI \
+  -Dversion=1.0 \
+  -Dpackaging=jar<span class="lang-label">BASH</span></code></pre>
+
+                <h3>2. Aggiungi la dipendenza al pom.xml</h3>
+
+                <p>Per Maven:</p>
+                <pre><code><span class="op">&lt;</span><span class="cl">dependency</span><span class="op">&gt;</span>
+    <span class="op">&lt;</span><span class="cl">groupId</span><span class="op">&gt;</span>it.endlesshorizons<span class="op">&lt;/</span><span class="cl">groupId</span><span class="op">&gt;</span>
+    <span class="op">&lt;</span><span class="cl">artifactId</span><span class="op">&gt;</span>EndlessBanksAPI<span class="op">&lt;/</span><span class="cl">artifactId</span><span class="op">&gt;</span>
+    <span class="op">&lt;</span><span class="cl">version</span><span class="op">&gt;</span>1.0<span class="op">&lt;/</span><span class="cl">version</span><span class="op">&gt;</span>
+    <span class="op">&lt;</span><span class="cl">scope</span><span class="op">&gt;</span>provided<span class="op">&lt;/</span><span class="cl">scope</span><span class="op">&gt;</span>
+<span class="op">&lt;/</span><span class="cl">dependency</span><span class="op">&gt;</span><span class="lang-label">XML</span></code></pre>
+
+                <p>Per Gradle:</p>
+                <pre><code><span class="fn">repositories</span> {
+    <span class="fn">mavenLocal</span>()
+}
+
+<span class="fn">dependencies</span> {
+    <span class="fn">compileOnly</span>(<span class="st">'it.endlesshorizons:EndlessBanksAPI:1.0'</span>)
+}<span class="lang-label">GRADLE</span></code></pre>
+
+                <h3>3. Dichiara la dipendenza nel plugin.yml</h3>
+                <p>EndlessBanks deve essere caricato prima del tuo plugin. Aggiungilo come dipendenza obbligatoria:</p>
+                <pre><code><span class="an">name</span><span class="op">:</span> TuoPlugin
+<span class="an">version</span><span class="op">:</span> <span class="st">1.0</span>
+<span class="an">main</span><span class="op">:</span> <span class="st">it.tuonamespace.tuoplugin.TuoPlugin</span>
+<span class="an">api-version</span><span class="op">:</span> <span class="st">'1.21'</span>
+<span class="an">depend</span><span class="op">:</span> [<span class="st">EndlessBanks</span>]   <span class="cm"># dipendenza</span><span class="lang-label">YAML</span></code></pre>
+            </section>
+
+            <!-- GETTING STARTED -->
+            <section class="section" id="getting-started">
+                <div class="section-header">
+                    <div class="section-icon icon-green">🚀</div>
+                    <h2>Getting started</h2>
+                </div>
+
+                <p>
+                    L'intero accesso all'API avviene tramite il singleton <code>EndlessBanksAPI.get()</code>,
+                    disponibile dopo che EndlessBanks ha completato il proprio <code>onEnable()</code>.
+                    Poiché hai dichiarato <code>depend: [EndlessBanks]</code>, quando il tuo plugin viene
+                    abilitato EndlessBanks è già operativo.
+                </p>
+
+                <pre><code><span class="kw">import</span> it.endlesshorizons.endlessbanks.api.EndlessBanksAPI;
+<span class="kw">import</span> it.endlesshorizons.endlessbanks.api.IEndlessBanksAPI;
+
+<span class="kw">public class</span> <span class="cl">TuoPlugin</span> <span class="kw">extends</span> <span class="cl">JavaPlugin</span> {
+
+    <span class="kw">private</span> <span class="cl">IEndlessBanksAPI</span> banksApi;
+
+    <span class="an">@Override</span>
+    <span class="kw">public void</span> <span class="fn">onEnable</span>() {
+        <span class="cm">// EndlessBanks è già caricato, l'istanza è quindi disponibile</span>
+        <span class="kw">this</span>.banksApi = <span class="cl">EndlessBanksAPI</span>.<span class="fn">get</span>();
+    }
+}<span class="lang-label">JAVA</span></code></pre>
+
+                <div class="callout callout-warn">
+                    <span class="callout-icon">⚠️</span>
+                    <span>Non chiamare <code>EndlessBanksAPI.get()</code> in fase di caricamento statico della classe o
+                        prima di <code>onEnable()</code>. Se EndlessBanks non è caricato, verrà lanciata una
+                        <code>IllegalStateException</code>.</span>
+                </div>
+            </section>
+
+            <!-- ENDLESSBANKSAPI -->
+            <section class="section" id="endlessbanksapi">
+                <div class="section-header">
+                    <div class="section-icon icon-blue">💶</div>
+                    <h2>EndlessBanksAPI</h2>
+                </div>
+
+                <p>È una classe statica e l'entry point principale. Fornisce accesso all'istanza di
+                    <code>IEndlessBanksAPI</code>.</p>
+
+                <div class="object-card">
+                    <div class="object-card-header">
+                        <span class="object-name">EndlessBanksAPI</span>
+                        <span class="object-badge badge-class">class</span>
+                    </div>
+                    <table class="method-table">
+                        <thead>
+                            <tr>
+                                <th>Metodo</th>
+                                <th>Ritorna</th>
+                                <th>Descrizione</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="method-name">get()</span></td>
+                                <td><span class="return-type">IEndlessBanksAPI</span></td>
+                                <td class="method-desc">Restituisce l'istanza attiva dell'API. Lancia
+                                    <code>IllegalStateException</code> se EndlessBanks non è caricato.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="callout callout-info">
+                    <span class="callout-icon">ℹ️</span>
+                    <span>I metodi <code>register()</code> e <code>unregister()</code> sono riservati all'uso interno di
+                        EndlessBanks. Non richiamarli mai da plugin esterni.</span>
+                </div>
+            </section>
+
+            <!-- ICARDMANAGER -->
+            <section class="section" id="icardmanager">
+                <div class="section-header">
+                    <div class="section-icon icon-blue">💳</div>
+                    <h2>ICardManager</h2>
+                </div>
+
+                <p>
+                    Gestisce i <strong>conti bancari personali</strong>. Ogni utente può avere al
+                    massimo
+                    una <code>BankCard</code> attiva, associata al proprio UUID. Ottenibile tramite
+                    <code>EndlessBanksAPI.get().getCardManager()</code>.
+                </p>
+
+                <div class="object-card">
+                    <div class="object-card-header">
+                        <span class="object-name">ICardManager</span>
+                        <span class="object-badge badge-interface">interface</span>
+                    </div>
+                    <table class="method-table">
+                        <thead>
+                            <tr>
+                                <th>Metodo</th>
+                                <th>Ritorna</th>
+                                <th>Descrizione</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="method-name">getCardFrom(UUID ownerUuid)</span></td>
+                                <td><span class="return-type">Optional&lt;BankCard&gt;</span></td>
+                                <td class="method-desc">Restituisce la BankCard dell'utente dato il suo UUID. Vuoto se
+                                    non ha un conto.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-name">getCard(UUID cardUuid)</span></td>
+                                <td><span class="return-type">Optional&lt;BankCard&gt;</span></td>
+                                <td class="method-desc">Ricerca una BankCard tramite l'UUID fisico della carta (non del
+                                    proprietario).</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-name">hasAccount(Player player)</span></td>
+                                <td><span class="return-type">boolean</span></td>
+                                <td class="method-desc">Verifica se il giocatore ha un conto bancario attivo.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-name">isCard(ItemStack item)</span></td>
+                                <td><span class="return-type">boolean</span></td>
+                                <td class="method-desc">Verifica se l'ItemStack è una carta bancaria (attiva o non
+                                    ancora attivata).</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-name">isDeactivatedCard(ItemStack item)</span></td>
+                                <td><span class="return-type">boolean</span></td>
+                                <td class="method-desc">Verifica se la carta è presente fisicamente nell'inventario ma
+                                    non ancora attivata in banca.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-name">getAll()</span></td>
+                                <td><span class="return-type">Collection&lt;BankCard&gt;</span></td>
+                                <td class="method-desc">Restituisce tutte le BankCard attualmente in cache (tutti i
+                                    conti attivi sul server).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Esempio</h3>
+                <pre><code><span class="cl">ICardManager</span> cardManager = <span class="cl">EndlessBanksAPI</span>.<span class="fn">get</span>().<span class="fn">getCardManager</span>();
+
+<span class="cm">// Controlla se il giocatore ha un conto</span>
+<span class="kw">if</span> (!cardManager.<span class="fn">hasAccount</span>(player)) {
+    player.<span class="fn">sendMessage</span>(<span class="st">"Devi prima aprire un conto in banca."</span>);
+    <span class="kw">return</span>;
+}
+
+<span class="cm">// Ottieni la carta e il saldo</span>
+cardManager.<span class="fn">getCardFrom</span>(player.<span class="fn">getUniqueId</span>()).<span class="fn">ifPresent</span>(card -> {
+    <span class="kw">double</span> saldo = card.<span class="fn">getBalance</span>(economy);
+    player.<span class="fn">sendMessage</span>(<span class="st">"Il tuo saldo è: "</span> + saldo + <span class="st">"€"</span>);
+});<span class="lang-label">JAVA</span></code></pre>
+            </section>
+
+            <!-- IBUSINESSMANAGER -->
+            <section class="section" id="ibusinessmanager">
+                <div class="section-header">
+                    <div class="section-icon icon-purple">🏢</div>
+                    <h2>IBusinessManager</h2>
+                </div>
+
+                <p>
+                    Gestisce i <strong>conti aziendali</strong> (partite IVA, carte aziendali, tipi di capitale).
+                    Un utente può essere titolare di più aziende. Ottenibile tramite
+                    <code>EndlessBanksAPI.get().getBusinessManager()</code>.
+                </p>
+
+                <div class="object-card">
+                    <div class="object-card-header">
+                        <span class="object-name">IBusinessManager</span>
+                        <span class="object-badge badge-interface">interface</span>
+                    </div>
+                    <table class="method-table">
+                        <thead>
+                            <tr>
+                                <th>Metodo</th>
+                                <th>Ritorna</th>
+                                <th>Descrizione</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="method-name">getCompany(String vatNumber)</span></td>
+                                <td><span class="return-type">Optional&lt;BusinessAccount&gt;</span></td>
+                                <td class="method-desc">Ricerca un'azienda tramite la sua Partita IVA (identificatore
+                                    univoco).</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-name">getAccountFrom(String companyName)</span></td>
+                                <td><span class="return-type">Optional&lt;BusinessAccount&gt;</span></td>
+                                <td class="method-desc">Ricerca un'azienda per nome (case-insensitive).</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-name">getFrom(UUID ownerUuid)</span></td>
+                                <td><span class="return-type">List&lt;BusinessAccount&gt;</span></td>
+                                <td class="method-desc">Restituisce tutte le aziende intestate all'utente specificato.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-name">getPersonalBusiness(UUID ownerUuid)</span></td>
+                                <td><span class="return-type">Optional&lt;BusinessAccount&gt;</span></td>
+                                <td class="method-desc">Restituisce la ditta individuale (regime forfettario)
+                                    dell'utente, se presente.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-name">exists(String vatNumber)</span></td>
+                                <td><span class="return-type">boolean</span></td>
+                                <td class="method-desc">Verifica se esiste un'azienda con questa Partita IVA.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-name">companyExists(String companyName)</span></td>
+                                <td><span class="return-type">boolean</span></td>
+                                <td class="method-desc">Verifica se esiste un'azienda con questo nome.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-name">hasCard(BusinessAccount account)</span></td>
+                                <td><span class="return-type">boolean</span></td>
+                                <td class="method-desc">Verifica se l'azienda ha una carta aziendale emessa.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-name">getCard(String vatNumber)</span></td>
+                                <td><span class="return-type">BusinessCard</span></td>
+                                <td class="method-desc">Restituisce la carta aziendale associata alla Partita IVA. Può
+                                    essere null se non emessa.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-name">getBusinessCard(UUID cardUuid)</span></td>
+                                <td><span class="return-type">Optional&lt;BusinessCard&gt;</span></td>
+                                <td class="method-desc">Ricerca una BusinessCard tramite il suo UUID fisico.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-name">isBusinessCard(ItemStack item)</span></td>
+                                <td><span class="return-type">boolean</span></td>
+                                <td class="method-desc">Verifica se l'ItemStack è una carta aziendale valida (attiva).
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-name">isDeactivatedCard(ItemStack item)</span></td>
+                                <td><span class="return-type">boolean</span></td>
+                                <td class="method-desc">Verifica se l'ItemStack è una carta aziendale non ancora
+                                    attivata.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="callout callout-warn">
+                    <span class="callout-icon">⚠️</span>
+                    <span>I metodi <code>register(BusinessAccount)</code> e
+                        <code>register(BusinessAccount, CardModel)</code> creano e persistono dati direttamente nel
+                        database. Utilizzarli solo in contesti controllati, la creazione standard avviene attraverso le
+                        GUI della Banca e dell'Agenzia delle Entrate, del plugin originario.</span>
+                </div>
+            </section>
+
+            <hr class="divider">
+
+            <!-- BANKCARD -->
+            <section class="section" id="bankcard">
+                <div class="section-header">
+                    <div class="section-icon icon-blue">🎴</div>
+                    <h2>BankCard</h2>
+                </div>
+
+                <p>Rappresenta il conto bancario personale di un utente. Il saldo è gestito integralmente da Vault.</p>
+
+                <div class="object-card">
+                    <div class="object-card-header">
+                        <span class="object-name">BankCard</span>
+                        <span class="object-badge badge-class">class</span>
+                    </div>
+                    <ul class="field-list">
+                        <li class="field-item"><span class="field-type">String</span><span
+                                class="field-name">ownerUuid</span><span class="field-desc">— UUID dell'utente
+                                proprietario</span></li>
+                        <li class="field-item"><span class="field-type">String</span><span
+                                class="field-name">cardUuid</span><span class="field-desc">— UUID univoco della carta
+                                fisica</span></li>
+                        <li class="field-item"><span class="field-type">String</span><span
+                                class="field-name">type</span><span class="field-desc">— Tipo di carta (es. "standard",
+                                "gold")</span></li>
+                        <li class="field-item"><span class="field-type">String</span><span
+                                class="field-name">pin</span><span class="field-desc">— PIN della carta (5 cifre)</span>
+                        </li>
+                        <li class="field-item"><span class="field-type">double</span><span
+                                class="field-name">dailyWithdrawn</span><span class="field-desc">— Importo prelevato
+                                oggi (si azzera al cambio giornata)</span></li>
+                        <li class="field-item"><span class="field-type">long</span><span
+                                class="field-name">lastWithdrawTimestamp</span><span class="field-desc">— Timestamp Unix
+                                dell'ultimo prelievo</span></li>
+                    </ul>
+                    <table class="method-table" style="margin-top:14px;">
+                        <thead>
+                            <tr>
+                                <th>Metodo</th>
+                                <th>Ritorna</th>
+                                <th>Descrizione</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="method-name">getBalance(Economy economy)</span></td>
+                                <td><span class="return-type">double</span></td>
+                                <td class="method-desc">Saldo Vault del proprietario. Richiede l'istanza di Economy (da
+                                    Vault).</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-name">getRealOwnerUuid()</span></td>
+                                <td><span class="return-type">UUID</span></td>
+                                <td class="method-desc">Restituisce l'UUID del proprietario come oggetto UUID tipizzato.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- BUSINESSACCOUNT -->
+            <section class="section" id="businessaccount">
+                <div class="section-header">
+                    <div class="section-icon icon-purple">🏛️</div>
+                    <h2>BusinessAccount</h2>
+                </div>
+                <p>Rappresenta il conto aziendale (l'anagrafica dell'azienda). Non contiene direttamente il saldo,
+                    quello è nella <code>BusinessCard</code> indicato successivamente.</p>
+
+                <div class="object-card">
+                    <div class="object-card-header">
+                        <span class="object-name">BusinessAccount</span>
+                        <span class="object-badge badge-class">class</span>
+                    </div>
+                    <ul class="field-list">
+                        <li class="field-item"><span class="field-type">String</span><span
+                                class="field-name">vatNumber</span><span class="field-desc">— Partita IVA (11 cifre,
+                                identificatore univoco)</span></li>
+                        <li class="field-item"><span class="field-type">String</span><span
+                                class="field-name">companyName</span><span class="field-desc">— Ragione sociale
+                                dell'azienda</span></li>
+                        <li class="field-item"><span class="field-type">String</span><span
+                                class="field-name">ownerUuid</span><span class="field-desc">— UUID del giocatore
+                                titolare</span></li>
+                        <li class="field-item"><span class="field-type">CapitalType</span><span
+                                class="field-name">capitalType</span><span class="field-desc">— Forma giuridica
+                                (FLAT_RATE, SRL, SPA)</span></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- BUSINESSCARD -->
+            <section class="section" id="businesscard">
+                <div class="section-header">
+                    <div class="section-icon icon-purple">💼</div>
+                    <h2>BusinessCard</h2>
+                </div>
+                <p>Rappresenta la carta aziendale. A differenza della BankCard personale, il saldo è memorizzato
+                    internamente (non dipende da Vault).</p>
+
+                <div class="object-card">
+                    <div class="object-card-header">
+                        <span class="object-name">BusinessCard</span>
+                        <span class="object-badge badge-class">class</span>
+                    </div>
+                    <ul class="field-list">
+                        <li class="field-item"><span class="field-type">String</span><span
+                                class="field-name">cardUuid</span><span class="field-desc">— UUID univoco della
+                                carta</span></li>
+                        <li class="field-item"><span class="field-type">String</span><span
+                                class="field-name">vatNumber</span><span class="field-desc">— Partita IVA dell'azienda
+                                associata</span></li>
+                        <li class="field-item"><span class="field-type">String</span><span
+                                class="field-name">ownerUuid</span><span class="field-desc">— UUID del titolare</span>
+                        </li>
+                        <li class="field-item"><span class="field-type">String</span><span
+                                class="field-name">type</span><span class="field-desc">— Tipo di carta aziendale</span>
+                        </li>
+                        <li class="field-item"><span class="field-type">double</span><span
+                                class="field-name">balance</span><span class="field-desc">— Saldo della carta aziendale
+                                (in €)</span></li>
+                        <li class="field-item"><span class="field-type">double</span><span
+                                class="field-name">dailyWithdrawn</span><span class="field-desc">— Prelevato oggi</span>
+                        </li>
+                    </ul>
+                    <table class="method-table" style="margin-top:14px;">
+                        <thead>
+                            <tr>
+                                <th>Metodo</th>
+                                <th>Ritorna</th>
+                                <th>Descrizione</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="method-name">getBalance()</span></td>
+                                <td><span class="return-type">double</span></td>
+                                <td class="method-desc">Saldo attuale della carta aziendale.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-name">add(double amount)</span></td>
+                                <td><span class="return-type">void</span></td>
+                                <td class="method-desc">Aggiunge importo al saldo. Non persistere manualmente — il
+                                    plugin lo gestisce internamente.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method-name">subtract(double amount)</span></td>
+                                <td><span class="return-type">void</span></td>
+                                <td class="method-desc">Sottrae importo dal saldo.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="callout callout-warn">
+                    <span class="callout-icon">⚠️</span>
+                    <span>Non chiamare <code>add()</code> o <code>subtract()</code> direttamente da plugin esterni. La
+                        modifica del saldo aziendale deve passare dai sistemi interni di EndlessBanks per garantire la
+                        registrazione delle transazioni in maniera corretta.</span>
+                </div>
+            </section>
+
+            <!-- CARDMODEL -->
+            <section class="section" id="cardmodel">
+                <div class="section-header">
+                    <div class="section-icon icon-amber">🗂️</div>
+                    <h2>CardModel</h2>
+                </div>
+                <p>Descrive il modello di una carta (tipo, limiti, costi). Necessario per la creazione di nuove carte
+                    tramite <code>IBusinessManager.register()</code>. I modelli disponibili sono configurati nel server
+                    — non crearli manualmente.</p>
+
+                <div class="object-card">
+                    <div class="object-card-header">
+                        <span class="object-name">CardModel</span>
+                        <span class="object-badge badge-class">class</span>
+                    </div>
+                    <ul class="field-list">
+                        <li class="field-item"><span class="field-type">String</span><span
+                                class="field-name">type</span><span class="field-desc">— Identificatore interno del
+                                tipo</span></li>
+                        <li class="field-item"><span class="field-type">String</span><span
+                                class="field-name">typeDisplayName</span><span class="field-desc">— Nome visualizzato,
+                                supporta anche i colori</span></li>
+                        <li class="field-item"><span class="field-type">double</span><span
+                                class="field-name">maxBalance</span><span class="field-desc">— Saldo massimo
+                                consentito</span></li>
+                        <li class="field-item"><span class="field-type">double</span><span
+                                class="field-name">dailyWithdrawLimit</span><span class="field-desc">— Limite prelievo
+                                giornaliero</span></li>
+                        <li class="field-item"><span class="field-type">double</span><span
+                                class="field-name">maxDebt</span><span class="field-desc">— Debito massimo
+                                consentito</span></li>
+                        <li class="field-item"><span class="field-type">double</span><span
+                                class="field-name">depositFee</span><span class="field-desc">— Commissione su
+                                deposito</span></li>
+                        <li class="field-item"><span class="field-type">double</span><span
+                                class="field-name">transferFee</span><span class="field-desc">— Commissione su
+                                trasferimento</span></li>
+                        <li class="field-item"><span class="field-type">boolean</span><span
+                                class="field-name">allowDirectPayment</span><span class="field-desc">— Abilita pagamenti
+                                diretti via POS</span></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- TRANSAZIONI -->
+            <section class="section" id="transactions">
+                <div class="section-header">
+                    <div class="section-icon icon-green">📊</div>
+                    <h2>Oggetti transazione</h2>
+                </div>
+
+                <div class="object-card">
+                    <div class="object-card-header">
+                        <span class="object-name">CommonTransaction</span>
+                        <span class="object-badge badge-class">class</span>
+                    </div>
+                    <p style="font-size:13px;color:var(--text-dim);margin-bottom:10px;">Transazione personale (utente
+                        ↔ entità).</p>
+                    <ul class="field-list">
+                        <li class="field-item"><span class="field-type">String</span><span
+                                class="field-name">id</span><span class="field-desc">— UUID della transazione</span>
+                        </li>
+                        <li class="field-item"><span class="field-type">String</span><span
+                                class="field-name">playerUuid</span><span class="field-desc">— UUID dell'utente
+                                coinvolto</span></li>
+                        <li class="field-item"><span class="field-type">String</span><span
+                                class="field-name">targetName</span><span class="field-desc">— Nome della
+                                controparte</span></li>
+                        <li class="field-item"><span class="field-type">TransactionDirection</span><span
+                                class="field-name">direction</span><span class="field-desc">— IN (entrata) o OUT
+                                (uscita)</span></li>
+                        <li class="field-item"><span class="field-type">double</span><span
+                                class="field-name">amount</span><span class="field-desc">— Importo in €</span></li>
+                        <li class="field-item"><span class="field-type">long</span><span
+                                class="field-name">timestamp</span><span class="field-desc">— Timestamp Unix
+                                dell'operazione</span></li>
+                    </ul>
+                </div>
+
+                <div class="object-card">
+                    <div class="object-card-header">
+                        <span class="object-name">BusinessTransaction</span>
+                        <span class="object-badge badge-class">class</span>
+                    </div>
+                    <p style="font-size:13px;color:var(--text-dim);margin-bottom:10px;">Transazione aziendale (azienda ↔
+                        entità).</p>
+                    <ul class="field-list">
+                        <li class="field-item"><span class="field-type">String</span><span
+                                class="field-name">id</span><span class="field-desc">— UUID della transazione</span>
+                        </li>
+                        <li class="field-item"><span class="field-type">String</span><span
+                                class="field-name">companyName</span><span class="field-desc">— Ragione sociale
+                                dell'azienda coinvolta</span></li>
+                        <li class="field-item"><span class="field-type">String</span><span
+                                class="field-name">targetName</span><span class="field-desc">— Nome della
+                                controparte</span></li>
+                        <li class="field-item"><span class="field-type">TransactionDirection</span><span
+                                class="field-name">direction</span><span class="field-desc">— IN (entrata) o OUT
+                                (uscita)</span></li>
+                        <li class="field-item"><span class="field-type">double</span><span
+                                class="field-name">amount</span><span class="field-desc">— Importo in €</span></li>
+                        <li class="field-item"><span class="field-type">long</span><span
+                                class="field-name">timestamp</span><span class="field-desc">— Timestamp Unix
+                                dell'operazione</span></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- ENUMS -->
+            <section class="section" id="enums">
+                <div class="section-header">
+                    <div class="section-icon icon-amber">🔖</div>
+                    <h2>Enumeratori</h2>
+                </div>
+
+                <div class="object-card">
+                    <div class="object-card-header">
+                        <span class="object-name">CapitalType</span>
+                        <span class="object-badge badge-enum">enum</span>
+                    </div>
+                    <p style="font-size:13px;color:var(--text-dim);margin-bottom:10px;">Forma giuridica dell'azienda.
+                    </p>
+                    <ul class="field-list">
+                        <li class="field-item"><span class="field-name">FLAT_RATE</span><span class="field-desc">—
+                                Regime forfettario (ditta individuale)</span></li>
+                        <li class="field-item"><span class="field-name">SRL</span><span class="field-desc">— Società a
+                                responsabilità limitata</span></li>
+                        <li class="field-item"><span class="field-name">SPA</span><span class="field-desc">— Società per
+                                azioni</span></li>
+                    </ul>
+                    <table class="method-table" style="margin-top:12px;">
+                        <thead>
+                            <tr>
+                                <th>Metodo</th>
+                                <th>Ritorna</th>
+                                <th>Descrizione</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="method-name">getNext()</span></td>
+                                <td><span class="return-type">CapitalType</span></td>
+                                <td class="method-desc">Restituisce il tipo successivo nella gerarchia (FLAT_RATE → SRL
+                                    → SPA → null).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="object-card">
+                    <div class="object-card-header">
+                        <span class="object-name">TransactionDirection</span>
+                        <span class="object-badge badge-enum">enum</span>
+                    </div>
+                    <ul class="field-list">
+                        <li class="field-item"><span class="field-name">IN</span><span class="field-desc">— Entrata di
+                                denaro</span></li>
+                        <li class="field-item"><span class="field-name">OUT</span><span class="field-desc">— Uscita di
+                                denaro</span></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- EVENTS -->
+            <section class="section" id="events">
+                <div class="section-header">
+                    <div class="section-icon icon-purple">📡</div>
+                    <h2>Eventi transazioni</h2>
+                </div>
+
+                <p>
+                    EndlessBanks pubblica eventi Bukkit ad ogni transazione registrata.
+                    È possibile ascoltarli tramite un <code>Listener</code> standard per reagire a pagamenti,
+                    prelievi o movimenti aziendali.
+                </p>
+
+                <div class="object-card">
+                    <div class="object-card-header">
+                        <span class="object-name">CommonTransactionEvent</span>
+                        <span class="object-badge badge-event">event</span>
+                    </div>
+                    <p style="font-size:13px;color:var(--text-dim);margin-bottom:10px;">Scattato ad ogni transazione
+                        personale registrata.</p>
+                    <table class="method-table">
+                        <thead>
+                            <tr>
+                                <th>Metodo</th>
+                                <th>Ritorna</th>
+                                <th>Descrizione</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="method-name">getTransaction()</span></td>
+                                <td><span class="return-type">CommonTransaction</span></td>
+                                <td class="method-desc">Restituisce i dati completi della transazione.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="object-card">
+                    <div class="object-card-header">
+                        <span class="object-name">BusinessTransactionEvent</span>
+                        <span class="object-badge badge-event">event</span>
+                    </div>
+                    <p style="font-size:13px;color:var(--text-dim);margin-bottom:10px;">Scattato ad ogni transazione
+                        aziendale registrata (entrate e uscite).</p>
+                    <table class="method-table">
+                        <thead>
+                            <tr>
+                                <th>Metodo</th>
+                                <th>Ritorna</th>
+                                <th>Descrizione</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="method-name">getTransaction()</span></td>
+                                <td><span class="return-type">BusinessTransaction</span></td>
+                                <td class="method-desc">Restituisce i dati completi della transazione aziendale.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Esempio listener</h3>
+                <pre><code><span class="kw">public class</span> <span class="cl">BankListener</span> <span class="kw">implements</span> <span class="cl">Listener</span> {
+
+    <span class="an">@EventHandler</span>
+    <span class="kw">public void</span> <span class="fn">onPersonalTransaction</span>(<span class="cl">CommonTransactionEvent</span> event) {
+        <span class="cl">CommonTransaction</span> tx = event.<span class="fn">getTransaction</span>();
+
+        <span class="kw">if</span> (tx.<span class="fn">getDirection</span>() == <span class="cl">TransactionDirection</span>.IN) {
+            <span class="cm">// L'utente ha ricevuto denaro</span>
+            <span class="cl">Player</span> player = <span class="cl">Bukkit</span>.<span class="fn">getPlayer</span>(<span class="cl">UUID</span>.<span class="fn">fromString</span>(tx.<span class="fn">getPlayerUuid</span>()));
+            <span class="kw">if</span> (player != <span class="kw">null</span>) {
+                player.<span class="fn">sendMessage</span>(<span class="st">"Hai ricevuto "</span> + tx.<span class="fn">getAmount</span>() + <span class="st">"€ da "</span> + tx.<span class="fn">getTargetName</span>());
+            }
+        }
+    }
+
+    <span class="an">@EventHandler</span>
+    <span class="kw">public void</span> <span class="fn">onBusinessTransaction</span>(<span class="cl">BusinessTransactionEvent</span> event) {
+        <span class="cl">BusinessTransaction</span> tx = event.<span class="fn">getTransaction</span>();
+        <span class="cm">// Log di tutte le transazioni aziendali</span>
+        <span class="cl">Bukkit</span>.<span class="fn">getLogger</span>().<span class="fn">info</span>(<span class="st">"[Bank] "</span> + tx.<span class="fn">getCompanyName</span>()
+            + <span class="st">" | "</span> + tx.<span class="fn">getDirection</span>()
+            + <span class="st">" | "</span> + tx.<span class="fn">getAmount</span>() + <span class="st">"€"</span>);
+    }
+}<span class="lang-label">JAVA</span></code></pre>
+            </section>
+
+            <!-- EXAMPLES -->
+            <section class="section" id="examples">
+                <div class="section-header">
+                    <div class="section-icon icon-green">💡</div>
+                    <h2>Casi d'uso pratici</h2>
+                </div>
+
+                <h3>Verifica se un utente ha completato l'apertura del conto (uso tipico nel tutorial)</h3>
+                <pre><code><span class="cl">IEndlessBanksAPI</span> api = <span class="cl">EndlessBanksAPI</span>.<span class="fn">get</span>();
+
+<span class="kw">public boolean</span> <span class="fn">hasCompleted</span>(<span class="cl">Player</span> player) {
+    <span class="kw">return</span> api.<span class="fn">getCardManager</span>().<span class="fn">hasAccount</span>(player);
+}<span class="lang-label">JAVA</span></code></pre>
+
+                <h3>Ottenere il saldo dell'utente</h3>
+                <pre><code><span class="kw">public double</span> <span class="fn">getBalance</span>(<span class="cl">Player</span> player, <span class="cl">Economy</span> economy) {
+    <span class="kw">return</span> <span class="cl">EndlessBanksAPI</span>.<span class="fn">get</span>()
+        .<span class="fn">getCardManager</span>()
+        .<span class="fn">getCardFrom</span>(player.<span class="fn">getUniqueId</span>())
+        .<span class="fn">map</span>(card -> card.<span class="fn">getBalance</span>(economy))
+        .<span class="fn">orElse</span>(<span class="nb">0.0</span>);
+}<span class="lang-label">JAVA</span></code></pre>
+
+                <h3>Verificare se un utente ha un'azienda attiva con carta emessa</h3>
+                <pre><code><span class="cl">IBusinessManager</span> bm = <span class="cl">EndlessBanksAPI</span>.<span class="fn">get</span>().<span class="fn">getBusinessManager</span>();
+
+<span class="kw">public boolean</span> <span class="fn">hasCompanyCard</span>(<span class="cl">Player</span> player) {
+    <span class="kw">return</span> bm.<span class="fn">getFrom</span>(player.<span class="fn">getUniqueId</span>())
+             .<span class="fn">stream</span>()
+             .<span class="fn">anyMatch</span>(bm::<span class="fn">hasCard</span>);
+}<span class="lang-label">JAVA</span></code></pre>
+
+                <h3>Reagire ad un pagamento ricevuto tramite POS</h3>
+                <pre><code><span class="an">@EventHandler</span>
+<span class="kw">public void</span> <span class="fn">onPaymentReceived</span>(<span class="cl">BusinessTransactionEvent</span> event) {
+    <span class="cl">BusinessTransaction</span> tx = event.<span class="fn">getTransaction</span>();
+
+    <span class="cm">// Interesse solo alle entrate dell'azienda "Negozio Roma"</span>
+    <span class="kw">if</span> (!tx.<span class="fn">getCompanyName</span>().<span class="fn">equalsIgnoreCase</span>(<span class="st">"Negozio Roma"</span>)) <span class="kw">return</span>;
+    <span class="kw">if</span> (tx.<span class="fn">getDirection</span>() != <span class="cl">TransactionDirection</span>.IN) <span class="kw">return</span>;
+
+    <span class="cm">// Avvia logica personalizzata (es. avanzamento tutorial, achievement, ecc.)</span>
+    <span class="fn">onSaleCompleted</span>(tx.<span class="fn">getAmount</span>());
+}<span class="lang-label">JAVA</span></code></pre>
+
+                <div class="callout callout-tip">
+                    <span class="callout-icon">✅</span>
+                    <span>Tutti i metodi che restituiscono <code>Optional</code> non lanciano mai eccezioni per dati
+                        mancanti. Usa sempre <code>ifPresent()</code>, <code>orElse()</code> o
+                        <code>ifPresentOrElse()</code> per gestirli in sicurezza.</span>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // Highlight active nav link on scroll
+        const sections = document.querySelectorAll('.section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    const active = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+                    if (active) active.classList.add('active');
+                }
+            });
+        }, { threshold: 0.3, rootMargin: '-20% 0px -70% 0px' });
+
+        sections.forEach(s => observer.observe(s));
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+
+</html>
