@@ -17,7 +17,7 @@
     <nav class="sidebar">
         <div class="sidebar-logo">
             <div class="plugin-name">EndlessBanks</div>
-            <div class="version">API v1.0</div><br><br>
+            <div class="version">API v1.0.1</div><br><br>
             <p>@codewithfil</p>
         </div>
 
@@ -103,7 +103,7 @@
                 <p>Richiedi il file <code>EndlessBanksAPI-1.0.jar</code> allo sviluppatore principale ed esegui:</p>
                 <pre><code><span class="cm"># Da terminale, nella directory dove si trova il jar</span>
 mvn install:install-file \
-  -Dfile=EndlessBanksAPI-1.0.jar \
+  -Dfile=EndlessBanksAPI-1.0.1.jar \
   -DgroupId=it.endlesshorizons \
   -DartifactId=EndlessBanksAPI \
   -Dversion=1.0 \
@@ -115,7 +115,7 @@ mvn install:install-file \
                 <pre><code><span class="op">&lt;</span><span class="cl">dependency</span><span class="op">&gt;</span>
     <span class="op">&lt;</span><span class="cl">groupId</span><span class="op">&gt;</span>it.endlesshorizons<span class="op">&lt;/</span><span class="cl">groupId</span><span class="op">&gt;</span>
     <span class="op">&lt;</span><span class="cl">artifactId</span><span class="op">&gt;</span>EndlessBanksAPI<span class="op">&lt;/</span><span class="cl">artifactId</span><span class="op">&gt;</span>
-    <span class="op">&lt;</span><span class="cl">version</span><span class="op">&gt;</span>1.0<span class="op">&lt;/</span><span class="cl">version</span><span class="op">&gt;</span>
+    <span class="op">&lt;</span><span class="cl">version</span><span class="op">&gt;</span>1.0.1<span class="op">&lt;/</span><span class="cl">version</span><span class="op">&gt;</span>
     <span class="op">&lt;</span><span class="cl">scope</span><span class="op">&gt;</span>provided<span class="op">&lt;/</span><span class="cl">scope</span><span class="op">&gt;</span>
 <span class="op">&lt;/</span><span class="cl">dependency</span><span class="op">&gt;</span><span class="lang-label">XML</span></code></pre>
 
@@ -125,7 +125,7 @@ mvn install:install-file \
 }
 
 <span class="fn">dependencies</span> {
-    <span class="fn">compileOnly</span>(<span class="st">'it.endlesshorizons:EndlessBanksAPI:1.0'</span>)
+    <span class="fn">compileOnly</span>(<span class="st">'it.endlesshorizons:EndlessBanksAPI:1.0.1'</span>)
 }<span class="lang-label">GRADLE</span></code></pre>
 
                 <h3>3. Dichiara la dipendenza nel plugin.yml</h3>
@@ -181,7 +181,8 @@ mvn install:install-file \
                 </div>
 
                 <p>È una classe statica e l'entry point principale. Fornisce accesso all'istanza di
-                    <code>IEndlessBanksAPI</code>.</p>
+                    <code>IEndlessBanksAPI</code>.
+                </p>
 
                 <div class="object-card">
                     <div class="object-card-header">
@@ -201,7 +202,8 @@ mvn install:install-file \
                                 <td><span class="method-name">get()</span></td>
                                 <td><span class="return-type">IEndlessBanksAPI</span></td>
                                 <td class="method-desc">Restituisce l'istanza attiva dell'API. Lancia
-                                    <code>IllegalStateException</code> se EndlessBanks non è caricato.</td>
+                                    <code>IllegalStateException</code> se EndlessBanks non è caricato.
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -871,31 +873,7 @@ cardManager.<span class="fn">getCardFrom</span>(player.<span class="fn">getUniqu
         </div>
     </main>
 
-    <script>
-        // Highlight active nav link on scroll
-        const sections = document.querySelectorAll('.section');
-        const navLinks = document.querySelectorAll('.nav-link');
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    navLinks.forEach(l => l.classList.remove('active'));
-                    const active = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
-                    if (active) active.classList.add('active');
-                }
-            });
-        }, { threshold: 0.3, rootMargin: '-20% 0px -70% 0px' });
-
-        sections.forEach(s => observer.observe(s));
-
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const target = document.querySelector(link.getAttribute('href'));
-                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            });
-        });
-    </script>
+    <script src="./script.js"></script>
 </body>
 
 </html>
